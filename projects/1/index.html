@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crime in Your District</title>
+        <style>
+            
+            body {
+                background-color: white;
+            }
+            
+            p, h1 {
+                font-family: helvetica;
+                
+            }
+            
+            p {
+                font-size:1.5em;
+                line-height:1.5em; 
+                margin-left: 24px;
+                font-family: Arial, Helvetica, sans-serif;
+                
+            }
+            
+            pre {
+                font-size: 2em;
+                
+            }
+            
+             hr {
+                color:black;
+                background-color:black;
+                height:5px;
+                
+            }
+            
+            
+            
+            #form  {
+                background-color: lightblue; 
+                border: 3px solid ; 
+                border-radius: 6px;
+                min-height:75px;
+                padding:15px;
+            }
+            
+            #title {
+                color: #FF0000;
+                text-align: center;
+                
+            }
+            
+            
+            #results {
+                background-color: beige;
+                border: 3px solid ; 
+                border-radius: 6px;
+               
+            }
+            
+           
+            .para1 {
+                font-size:1em;
+                line-height:1.5em; 
+                margin-left:10px;
+                font-family: Arial, Helvetica, sans-serif;
+                
+            }
+            .divMore {
+                text-align: center; 
+            }
+            
+            .para2 {
+                font-size:1em;
+                line-height:1.5em; 
+                margin-left:10px;
+                font-family: Arial, Helvetica, sans-serif;
+                
+            }
+            
+        </style>
+    </head>
+    <body>
+             
+            
+        <div id="title">    
+            <h1>Crime In Your District</h1>
+        </div>
+        
+        <!-- div for instructions and form -->
+        <div id="form">
+            
+            <p> An app created by Colin Marsh and Joseph Kenevan that calls data from Chicago's crime database.</p>
+          
+          <h2> Enter a district to find if domestic crimes in 2017 have occured (Search "007", "009",  or "011" to test and press the enter key to call the data)</h2>
+            
+            <input id="txtQuery" type="text" placeholder="Enter your search term"></input>
+            
+            <button type="button" id="btnSearch" >Search</button>
+            
+        </div>
+        
+        <!-- a div to store the results -->
+        <div id="results">
+            
+        </div>
+        
+      
+        
+    
+        
+        
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+    
+ 
+      $(function () {   
+            
+          $("#txtQuery").keyup(function(event){
+                        if(event.keyCode == 13){
+                            $("#btnSearch").click();
+                        }
+                    });
+                    
+           $(".btnMore").on("click", function() {
+               $(".divMore").hide();
+               $(".para2").show();
+               
+               
+               
+           })
+           
+           
+           
+           $("#btnSearch").on("click", function() { 
+               
+               
+               
+               var baseURL = "https://data.cityofchicago.org/resource/6zsd-86xi.json";
+            
+                var url = baseURL + '?year=' + "2017" + "&domestic=" + "true" ;   
+            
+               
+               var searchTerm = $("#txtQuery").val();
+                
+                $("#results").html("");
+                
+                var searchUrl = url + "&district=" + searchTerm;
+                
+                console.log(searchUrl);
+                
+                 
+            // start with button disabled
+            $("#btnSearch").attr("disabled", true);
+            
+            // enable button only if text in input box
+            $("#txtQuery").keyup(function(){   
+                
+                // change event doesn't work, so using keyup 
+                
+                if ($("#txtQuery").val() == "") {   // if value is empty
+                    $("#btnSearch").attr("disabled", true)  // set disabled
+                
+                }
+                else {
+                    
+                    $("#btnSearch").attr("disabled", false)
+                
+                    
+                }
+            });
+        
+            
+            
+
+        
+        
+                $.getJSON(searchUrl)
+                    .done(function(data){
+                    console.log(data);
+                    
+                    //nytData = data;
+                    
+                    var numRecords = data.length;  // the length of the array
+                        
+                        // notify of number of records
+                        var message = 
+                            "<p>Records found: "
+                            + numRecords
+                            + "</p>"
+                            + "<hr>"
+                            
+                            
+                $("#results").show()
+                
+                
+                $("#results").append(message);
+                        
+                        
+                    
+                    $.each(data, function(index, value){
+                  
+                      
+                      $('#results').append(
+                         "<p class='para1'>" 
+                        +"Case #: "
+                        + value.case_number
+                        +"<br>"
+                        + "Date: "
+                        + value.date
+                        +"<br>"
+                        + "Ward: "
+                        + value.ward
+                        +"<br>"
+                        +"Block: "
+                        + value.block
+                        + "<br>"
+                        + "</p>"
+                        + "<div class='divMore'>"
+                        + "<button type= 'button' class='btnMore'>Show More</button>"
+                        + "</div>"
+                        + "<br>"
+                        + "<p class='para2'>"
+                        + "Description: "
+                        + value.description
+                        + "<br>"
+                        + "Location Description: "
+                        + value.location_description
+                        + "<br>"
+                        + "ID: "
+                        + value.id
+                        + "</p>"
+                        +"<hr>" 
+                        ); 
+                    
+                    })
+                    
+                    
+                    $.each(data, function(index, value){
+                        $(".para2").hide();
+                        
+                        
+                    })
+                    
+                    
+                })
+                
+                .fail(function(){
+                    
+                }) 
+               
+               
+           });
+            
+           
+            
+
+        }) // end of jQuery wrapper
+        
+        
+    </script>
+    </body>
+</html>
