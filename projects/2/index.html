@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Find My Way App</title>
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <style>
+             body {
+                font-family: "Courier New", monospace;
+                background-color: white
+            }
+        
+            #title {
+                background: white;
+                border: 30px solid  #0099ff;
+                color:  #0099ff;
+                margin: auto;
+                width: 300px; 
+                text-align: center; 
+                font-size: 130%; 
+                padding: 40px; 
+                border-radius: 40px; 
+                border-width: 10px;
+            }
+            
+           #btnBusTimes{
+              background-color:#0099ff;
+              color: white;
+              font-family: "Courier New", monospace;
+              font-size: 300%;
+              border-radius: 20px;
+              width: 500px;
+              cursor: pointer;
+              border: solid ;
+              text-align: center;
+           }
+           
+
+           .divBtn{
+                background-color: white;
+                border: none;
+                color: white;
+                padding: 90px;
+                text-align: center;
+                font-size: 16px;
+                margin: auto;
+           }
+           .resultsDiv{
+                background-color: white;
+                color: #0099ff;
+                border: solid;
+                border-radius: 40px;
+                padding: 90px;
+                text-align: left;
+                font-size: 16px;
+                margin: auto;
+           }
+           .divider{
+               border-width: 1px 1px 0;
+               border-style: solid;
+               border-color: #0099ff; 
+               width: 30%;
+               margin-right: 70%
+               
+           }
+           
+        </style>
+    </head>
+    
+    <body>
+        <div id="title">
+            <h1>Find My Way</h1>
+        </div>
+        
+        <div class="divBtn">
+            <button id="btnBusTimes" type="button">Where's the bus?</button>
+        </div>
+        
+        <div class="resultsDiv">
+            <h2>Western, Northbound</h2>
+            <hr class= "divider" />
+            <div id="49Northbound"></div>
+        </div>
+        
+        <div class="resultsDiv">   
+            <h2> Western, Southbound</h2>
+            <hr class= "divider" />
+            <div id="49Southbound"></div>
+        </div>
+
+        <div class="resultsDiv">
+            <h2>Addison, Westbound</h2>
+            <hr class= "divider" />          
+            <div id="152Westbound"></div>
+        </div>
+        
+        <div class="resultsDiv">
+            <h2>Addison, Eastbound</h2>
+            <hr class= "divider"/>
+            <div id=152Eastbound></div>
+        </div>    
+               
+        
+       
+        
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script>
+          
+                     
+          var apiPassThruUrl = "https://polar-garden-75406.herokuapp.com/apiPassThru.php";
+          
+          var apiEndpoint = "http://www.ctabustracker.com/bustime/api/v2/getpredictions";
+          
+       $(function() {
+            $(".resultsDiv").hide();
+           
+            $("#btnBusTimes").on("click", function(){
+                
+                $("#49Northbound").html("");
+                $("#49Southbound").html("");
+                $("#152Westbound").html("");
+                $("#152Eastbound").html("");
+                
+                $(".resultsDiv").show();
+                
+          $.ajax({
+              url: apiPassThruUrl,
+              dataType: "json",
+              method: 'GET',
+              data: {"apiEndpoint": apiEndpoint,
+                      "key" : "e7Kmgpa9bYj9Dw8v3xpzHPtPu",
+                      "format":"json", 
+                      "stpid":"8195,8417,12569,12527",
+                      "top":"",
+                      "tmstmp":"m"
+                    
+              },
+        
+            }).done (function (data) {
+              console.log(data);
+              
+             
+              $.each(data["bustime-response"]["prd"], function(i,v) {
+                    $("#" + v.rt + v.rtdir).append(
+                      "<br>"
+                      +"Bus Number: "
+                      +v.vid
+                      +"<br>"
+                      + "Last Destination: "
+                      +v.des
+                      + "<br>"
+                      + "<h3>"
+                      +"ETA: " 
+                      + v.prdctdn 
+                      + " minutes" 
+                      + "</h3>"
+                      + "<hr class='divider' />"
+                      
+                    );
+                 })
+              })
+
+            });
+       });
+            
+    
+        </script>
+        
+        
+        
+        
+    </body>
+</html>
