@@ -1,0 +1,141 @@
+<html>
+  <head>
+    <!-- Material Design Lite -->
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script>
+          var apiPassThruUrl = "https://polar-garden-75406.herokuapp.com/apiPassThru.php";
+          
+          var apiEndpoint = "http://www.ctabustracker.com/bustime/api/v2/getpredictions";
+          
+          /*$.each(routeIds, function(I,V){
+            var option = $("<option>");
+            option.attr("value",V);
+            option.text(v);
+            $("#route").append(option);
+          })
+          
+          $("#route"). */
+          
+          $(function() {
+            $(".resultsDiv").hide();
+           
+            $("#btnBusTimes").on("click", function(){
+                
+                $("#btnBusTimes").hide()
+                $("#49Northbound").html("");
+                $("#49Southbound").html("");
+                $("#152Westbound").html("");
+                $("#152Eastbound").html("");
+                
+                $(".resultsDiv").show();
+                
+          $.ajax({
+              url: apiPassThruUrl,
+              dataType: "json",
+              method: 'GET',
+              data: {"apiEndpoint": apiEndpoint,
+                      "key" : "e7Kmgpa9bYj9Dw8v3xpzHPtPu",
+                      "format":"json", 
+                      "stpid":"8195,8417,12569,12527",
+                      "top":"",
+                      "tmstmp":"m"
+                    
+              },
+        
+            }).done (function (data) {
+              console.log(data);
+              
+             
+              $.each(data["bustime-response"]["prd"], function(i,v) {
+                    $("#" + v.rt + v.rtdir).append(
+                      "<br>"
+                      +"Bus Number: "
+                      +v.vid
+                      +"<br>"
+                      + "Last Destination: "
+                      +v.des
+                      + "<br>"
+                      + "<h3>"
+                      +"ETA: " 
+                      + v.prdctdn 
+                      + " minutes" 
+                      + "</h3>"
+                      + "<hr class='divider' />"
+                      
+                    );
+                 })
+              })
+
+            });
+       });
+            
+    
+      </script>
+    
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <!-- Material Design icon font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" type="text/css" href="./busTracker.css">
+  </head>
+  <body>
+    <!-- Simple header with fixed tabs. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header
+                mdl-layout--fixed-tabs">
+      <header class="mdl-layout__header" id="titleHeader">
+        <div class="mdl-layout__header-row">
+          <!-- Title -->
+          <span class="mdl-layout-title">Find My Way V.2</span>
+        </div>
+        <!-- Tabs -->
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect" id="titleHeader">
+          <a href="#fixed-tab-1" class="mdl-layout__tab is-active">Tab 1</a>
+          <a href="#fixed-tab-2" class="mdl-layout__tab">Tab 2</a>
+          <a href="#fixed-tab-3" class="mdl-layout__tab">Tab 3</a>
+        </div>
+      </header>
+
+      <main class="mdl-layout__content">
+        <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
+          <div class="page-content"><!-- Your content goes here --></div>
+        </section>
+        <section class="mdl-layout__tab-panel" id="fixed-tab-2">
+  
+        
+        <div class="divBtn">
+            <button id="btnBusTimes" type="button">Where's the bus?</button>
+        </div>
+        
+        <div class="resultsDiv">
+            <h2>Western, Northbound</h2>
+            <hr class= "divider" />
+            <div id="49Northbound"></div>
+        </div>
+        
+        <div class="resultsDiv">   
+            <h2> Western, Southbound</h2>
+            <hr class= "divider" />
+            <div id="49Southbound"></div>
+        </div>
+
+        <div class="resultsDiv">
+            <h2>Addison, Westbound</h2>
+            <hr class= "divider" />          
+            <div id="152Westbound"></div>
+        </div>
+        
+        <div class="resultsDiv">
+            <h2>Addison, Eastbound</h2>
+            <hr class= "divider"/>
+            <div id=152Eastbound></div>
+        </div>    
+          </div>
+        </section>
+        <section class="mdl-layout__tab-panel" id="fixed-tab-3">
+          <div class="page-content"><!-- Your content goes here --></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
